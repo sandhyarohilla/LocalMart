@@ -19,8 +19,13 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        String allowedOrigins = System.getenv("FRONTEND_URL");
+        if (allowedOrigins == null || allowedOrigins.isEmpty()) {
+            allowedOrigins = "http://localhost:5173"; // Default for development
+        }
+        
         registry.addMapping("/api/**") // Applies to all routes under /api/
-            .allowedOrigins("http://localhost:5173") // Your React app
+            .allowedOrigins(allowedOrigins.split(",")) // Support multiple origins
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
             .allowedHeaders("*")
             .allowCredentials(true);
